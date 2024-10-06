@@ -38,7 +38,7 @@ func (slot *Slot) Unpark(ticket *Ticket.Ticket) (*Car.Car, error) {
 	return nil, CustomErrors.ErrInvalidTicket
 }
 
-func (slot *Slot) IsCarIsParked(car *Car.Car) error {
+func (slot *Slot) IsCarParked(car *Car.Car) error {
 	if !slot.IsEmpty() && slot.car.IsSameCar(car) {
 		return CustomErrors.ErrCarAlreadyParked
 	}

@@ -12,23 +12,37 @@ import (
 func TestIsEmpty(t *testing.T) {
 	slot := NewSlot()
 
-	t.Run("IfSlotIsEmpty", func(t *testing.T) {
+	t.Run("if slot is empty", func(t *testing.T) {
 		assert.True(t, slot.IsEmpty())
 	})
 
-	t.Run("IfSlotIsNotEmpty", func(t *testing.T) {
+	t.Run("if slot is not empty", func(t *testing.T) {
+		car := Car.NewCar("TS-1234", Car.RED)
+
+		slot.Park(car)
+
+		assert.False(t, slot.IsEmpty())
+	})
+
+	t.Run("if slot is empty after park and unpark", func(t *testing.T) {
 		car := Car.NewCar("TS-1234", Car.RED)
 		slot.Park(car)
 		assert.False(t, slot.IsEmpty())
+
+		_, _ = slot.Unpark(slot.ticket)
+
+		assert.True(t, slot.IsEmpty())
 	})
 }
 
 // Tests for Park() method
 func TestPark(t *testing.T) {
-	t.Run("ParkSuccessfully", func(t *testing.T) {
+	t.Run("park successfully", func(t *testing.T) {
 		slot := NewSlot()
 		car := Car.NewCar("TS-1234", Car.RED)
+
 		ticket := slot.Park(car)
+
 		assert.NotNil(t, ticket)
 	})
 }
@@ -38,14 +52,15 @@ func TestUnpark(t *testing.T) {
 	slot := NewSlot()
 	car := Car.NewCar("TS-1234", Car.RED)
 
-	t.Run("IfTicketIsValid", func(t *testing.T) {
+	t.Run("if ticket is valid", func(t *testing.T) {
 		ticket := slot.Park(car)
 
 		actualCar, _ := slot.Unpark(ticket)
+
 		assert.Equal(t, car, actualCar)
 	})
 
-	t.Run("IfTicketIsInvalid", func(t *testing.T) {
+	t.Run("if ticket is invalid", func(t *testing.T) {
 		slot.Park(car)
 		invalidTicket := Ticket.NewTicket()
 
@@ -61,20 +76,20 @@ func TestIsCarParked(t *testing.T) {
 	slot := NewSlot()
 	car := Car.NewCar("TS-1234", Car.RED)
 
-	t.Run("IfCarIsParked", func(t *testing.T) {
+	t.Run("if car is parked", func(t *testing.T) {
 		slot.Park(car)
 
-		err := slot.IsCarIsParked(car)
+		err := slot.IsCarParked(car)
 
 		assert.Error(t, err)
 		assert.Equal(t, CustomErrors.ErrCarAlreadyParked, err)
 	})
 
-	t.Run("IfCarIsNotParked", func(t *testing.T) {
+	t.Run("if car is not parked", func(t *testing.T) {
 		slot := NewSlot()
 		car := Car.NewCar("TS-1234", Car.RED)
 
-		err := slot.IsCarIsParked(car)
+		err := slot.IsCarParked(car)
 
 		assert.NoError(t, err)
 	})
@@ -85,13 +100,13 @@ func TestIsCarOfColor(t *testing.T) {
 	slot := NewSlot()
 	car := Car.NewCar("TS-1234", Car.RED)
 
-	t.Run("IfCarIsOfSameColor", func(t *testing.T) {
+	t.Run("if car is of same color", func(t *testing.T) {
 		slot.Park(car)
 
 		assert.True(t, slot.IsCarOfColor(Car.RED))
 	})
 
-	t.Run("IfCarIsOfDifferentColor", func(t *testing.T) {
+	t.Run("if car is of different color", func(t *testing.T) {
 		slot.Park(car)
 
 		assert.False(t, slot.IsCarOfColor(Car.BLUE))
@@ -103,13 +118,13 @@ func TestHasSameRegistrationNumber(t *testing.T) {
 	slot := NewSlot()
 	car := Car.NewCar("TS-1234", Car.RED)
 
-	t.Run("IfCarRegistrationNumbersAreSame", func(t *testing.T) {
+	t.Run("if car registration numbers are same", func(t *testing.T) {
 		slot.Park(car)
 
 		assert.True(t, slot.HasSameRegistrationNumber("TS-1234"))
 	})
 
-	t.Run("IfCarRegistrationNumbersAreDifferent", func(t *testing.T) {
+	t.Run("if car registration numbers are different", func(t *testing.T) {
 		slot.Park(car)
 
 		assert.False(t, slot.HasSameRegistrationNumber("TS-1235"))
