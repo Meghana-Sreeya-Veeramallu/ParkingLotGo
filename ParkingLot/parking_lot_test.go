@@ -194,3 +194,53 @@ func TestGetCarSlotNumberByRegistrationNumber(t *testing.T) {
 		assert.ErrorIs(t, err, CustomErrors.ErrCarNotFound)
 	})
 }
+
+// Tests for CountAvailableSlots() method
+func TestCountAvailableSlots(t *testing.T) {
+	t.Run("When parking lot is empty", func(t *testing.T) {
+		parkingLot, _ := NewParkingLot(2)
+		expectedCount := 2
+
+		actualCount := parkingLot.CountAvailableSlots()
+
+		assert.Equal(t, expectedCount, actualCount)
+	})
+
+	t.Run("When some slots are occupied", func(t *testing.T) {
+		parkingLot, _ := NewParkingLot(2)
+		firstCar := Car.NewCar("TS-1234", Car.RED)
+		parkingLot.Park(firstCar)
+		expectedCount := 1
+
+		actualCount := parkingLot.CountAvailableSlots()
+
+		assert.Equal(t, expectedCount, actualCount)
+	})
+
+	t.Run("When parking lot is full", func(t *testing.T) {
+		parkingLot, _ := NewParkingLot(2)
+		firstCar := Car.NewCar("TS-1234", Car.RED)
+		secondCar := Car.NewCar("TS-1235", Car.BLUE)
+		parkingLot.Park(firstCar)
+		parkingLot.Park(secondCar)
+		expectedCount := 0
+
+		actualCount := parkingLot.CountAvailableSlots()
+
+		assert.Equal(t, expectedCount, actualCount)
+	})
+
+	t.Run("After unparking a car", func(t *testing.T) {
+		parkingLot, _ := NewParkingLot(2)
+		firstCar := Car.NewCar("TS-1234", Car.RED)
+		secondCar := Car.NewCar("TS-1235", Car.BLUE)
+		ticket, _ := parkingLot.Park(firstCar)
+		parkingLot.Park(secondCar)
+		parkingLot.Unpark(ticket)
+		expectedCount := 1
+
+		actualCount := parkingLot.CountAvailableSlots()
+
+		assert.Equal(t, expectedCount, actualCount)
+	})
+}
